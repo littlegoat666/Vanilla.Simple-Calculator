@@ -1,11 +1,12 @@
-const displayBox = document.querySelector('.display'),
-        displayInput = document.querySelector('.display-input'),
-        displayResult = document.querySelector('.display-result'),
-        buttons = document.querySelectorAll('button'),
-        operators = ['%', '÷', '×', '-', '+'];
-let input = '',
-    result = '',
-    lastCalculation = false;
+    const displayBox = document.querySelector('.display'),
+            displayInput = document.querySelector('.display-input'),
+            displayResult = document.querySelector('.display-result'),
+            buttons = document.querySelectorAll('button'),
+            operators = ['%', '÷', '×', '-', '+'];
+
+    let input = '',
+        result = '',
+        lastCalculation = false;
 
 // Main Function To Handle Calculator Logic
     const calculate = btnValue => {
@@ -32,6 +33,7 @@ let input = '',
                 }
 
                 const formattedInput = replaceOperators(input);
+
                 try {
                     const calculatedValue = input.includes('%') ? calculatePercentage(input) : eval(formattedInput);
                     result = parseFloat(calculatedValue.toFixed(10)).toString();
@@ -80,6 +82,7 @@ let input = '',
                 else if (input === '' || isLastCharOperator || lastChar === '(') input += decimalValue;
                 else {
                     let lastOperatorIndex = -1;
+
                     for (const operator of operators) {
                         const index = input.lastIndexOf(operator);
                         if (index > lastOperatorIndex) lastOperatorIndex = index;
@@ -111,13 +114,22 @@ let input = '',
             }
 
         // Update Display
-            displayInput.value = input;
+            displayInput.value = formatDisplay(input);
             displayResult.value = result;
             displayInput.scrollLeft = displayInput.scrollWidth;
     };
 
 // Function To Replace Division (÷) And Multiplication (×) Symbols With JavaScript-Compatible Operators ('/' And '*')
     const replaceOperators = input => input.replaceAll('÷', '/').replaceAll('×', '*');
+
+    const formatDisplay = value => {
+    return value
+        .replace(/([+\-×÷%])/g, ' $1 ')
+        .replace(/\(/g, '( ')
+        .replace(/\)/g, ' )')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
 
 // Function To Reset Calculator State With A New Input Value
     const resetCalculator = newInput => {
@@ -131,6 +143,7 @@ let input = '',
     const countBrackets = input => {
         let openBracketsCount = 0,
             closeBracketsCount = 0;
+
         for (const char of input) {
             if (char === '(') openBracketsCount++;
             else if (char === ')') closeBracketsCount++;
@@ -143,6 +156,7 @@ let input = '',
     const calculatePercentage = input => {
         let processedInput = '',
             numberBuffer = '';
+
         const bracketsState = [];
 
         for (let i = 0; i < input.length; i++) {
@@ -161,6 +175,7 @@ let input = '',
                 }
                 numberBuffer = '';
             }
+
             else if (operators.includes(char) || char === '(' || char === ')') {
                 if (numberBuffer) {
                     processedInput += numberBuffer;
